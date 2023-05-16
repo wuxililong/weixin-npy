@@ -181,7 +181,7 @@ def lucky():
             data = res.read()
             data = json.loads(data)
             flag = "爱情指数"+str(data["newslist"][1]["content"])+" 工作指数"+str(data["newslist"][2]["content"])
-            remark = "今日概述："+str(data["newslist"][8]["content"])
+            remark = " "+str(data["newslist"][8]["content"])
             return flag,remark
         except:
             return ("星座运势API调取错误，请检查API是否正确申请或是否填写正确"),("")
@@ -221,7 +221,7 @@ def tip():
             return ("天气预报API调取错误，请检查API是否正确申请或是否填写正确"),""
 
 #推送信息
-def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, pipi, lizhi,sunrise,sunset, tips, love, health_tip, constellation,remark):
+def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, pipi, sunrise,sunset, tips, love, health_tip, constellation,remark):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
     week_list = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
     year = localtime().tm_year
@@ -241,6 +241,54 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
     for k, v in config.items():
         if k[0:5] == "birth":
             birthdays[k] = v
+    pipi_1,pipi_2 = pipi,""
+    love_1,love_2 = love,""
+    beizhu_1,beizhu_2,beizhu_3,beizhu_4,beizhu_5 = remark,"","","",""
+    tips_1, tips_2, tips_3, tips_4,tips_5 = tips, "", "", "",""
+    if 20<=len(remark)<40:
+        beizhu_1 = remark[:20]
+        beizhu_2 = remark[20:]
+    elif 40<=len(remark)<60:
+        beizhu_1 = remark[:20]
+        beizhu_2 = remark[20:40]
+        beizhu_3 = remark[40:]
+    elif 60<=len(remark)<80:
+        beizhu_1 = remark[:20]
+        beizhu_2 = remark[20:40]
+        beizhu_3 = remark[40:60]
+        beizhu_4 = remark[60:]
+    elif 80 <= len(remark):
+        beizhu_1 = remark[:20]
+        beizhu_2 = remark[20:40]
+        beizhu_3 = remark[40:60]
+        beizhu_4 = remark[60:80]
+        beizhu_5 = remark[80:]
+
+    if 20<=len(tips)<40:
+        tips_1 = tips[:20]
+        tips_2 = tips[20:]
+    elif 40<=len(tips)<60:
+        tips_1 = tips[:20]
+        tips_2 = tips[20:40]
+        tips_3 = tips[40:]
+    elif 60<=len(tips)<80:
+        tips_1 = tips[:20]
+        tips_2 = tips[20:40]
+        tips_3 = tips[40:60]
+        tips_4 = tips[60:]
+    elif 80 <= len(tips):
+        tips_1 = tips[:20]
+        tips_2 = tips[20:40]
+        tips_3 = tips[40:60]
+        tips_4 = tips[60:80]
+        tips_5 = tips[80:]
+
+    if len(pipi)>=20:
+        pipi_1 = pipi[:18]
+        pipi_2 = pipi[18:]
+    if len(love)>=20:
+        love_1 = love[:18]
+        love_2 = love[18:]
     data = {
         "touser": to_user,
         "template_id": config["template_id"],
@@ -272,18 +320,21 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
                 "color": get_color()
             },
 
-            "love": {
-                "value": love,
+            "love1": {
+                "value": love_1,
+                "color": get_color()
+            },
+            "love2": {
+                "value": love_2,
                 "color": get_color()
             },
 
-            "remark": {
-                "value": remark,
+            "pipi1": {
+                "value": pipi_1,
                 "color": get_color()
             },
-
-            "pipi": {
-                "value": pipi,
+            "pipi2": {
+                "value": pipi_2,
                 "color": get_color()
             },
 
@@ -291,9 +342,24 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
                 "value": constellation,
                 "color": get_color()
             },
-
-            "lizhi": {
-                "value": lizhi,
+            "beizhu1": {
+                "value": beizhu_1,
+                "color": get_color()
+            },
+            "beizhu2": {
+                "value": beizhu_2,
+                "color": get_color()
+            },
+            "beizhu3": {
+                "value": beizhu_3,
+                "color": get_color()
+            },
+            "beizhu4": {
+                "value": beizhu_4,
+                "color": get_color()
+            },
+            "beizhu5": {
+                "value": beizhu_5,
                 "color": get_color()
             },
 
@@ -312,8 +378,27 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
                 "color": get_color()
             },
 
-            "tips": {
-                "value": tips,
+            "tips1": {
+                "value": tips_1,
+                "color": get_color()
+            },
+            "tips2": {
+                "value": tips_2,
+                "color": get_color()
+            }
+            ,
+            "tips3": {
+                "value": tips_3,
+                "color": get_color()
+            }
+            ,
+            "tips4": {
+                "value": tips_4,
+                "color": get_color()
+            }
+            ,
+            "tips5": {
+                "value": tips_5,
                 "color": get_color()
             }
         }
@@ -379,7 +464,7 @@ if __name__ == "__main__":
     Whether_health=config["Whether_health"]
     #获取星座
     astro = config["astro"]
-    # 获取词霸每日金句
+    # 获取土味情话
     love = get_ciba()
     #彩虹屁
     pipi = caihongpi()
@@ -393,7 +478,7 @@ if __name__ == "__main__":
     constellation,remark = lucky()
     # 公众号推送消息
     for user in users:
-        send_message(user, accessToken, city, weather, max_temperature, min_temperature, pipi, lizhi,sunrise,sunset,tips, love, health_tip, constellation,remark)
+        send_message(user, accessToken, city, weather, max_temperature, min_temperature, pipi, sunrise,sunset,tips, love, health_tip, constellation,remark)
     import time
     time_duration = 3.5
     time.sleep(time_duration)
